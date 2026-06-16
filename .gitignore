@@ -1,0 +1,23 @@
+# Dependencias y artefactos de build
+node_modules
+dist
+*.tsbuildinfo
+
+# Paquete generado para Lienzo (artefacto, se regenera con `npm run zip:lienzo`)
+conoce-claude-lienzo.zip
+*.zip
+
+# Secretos y entorno local (NUNCA subir el token de la suscripción)
+.env
+*.local
+
+# Logs y temporales
+server.log
+*.log
+.DS_Store
+
+# Config local de Claude Code (personal, por máquina — no compartir)
+.claude/settings.local.json
+
+# Nota: .env.lienzo SÍ se versiona a propósito — solo contiene la URL PÚBLICA
+# del backend (sin secretos) y es necesaria para `npm run build:lienzo`.
