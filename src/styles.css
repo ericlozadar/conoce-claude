@@ -2565,6 +2565,24 @@ pre {
   transform: none;
 }
 
+/* ---------- Portada limpia (Home) ----------
+   El Home es lo que la galería de Lienzo captura como «portada» (screenshot).
+   La entrada cinemática del hero arranca en opacity:0, así que un screenshot
+   tomado en el primer instante salía EN BLANCO. Solo en el Home anulamos esas
+   entradas → renderiza completo desde el frame 0. Las páginas de lección
+   conservan intactas sus animaciones de entrada (se aprecian al navegar). */
+.home .sharp-kicker,
+.home .sharp-title,
+.home .sharp-lede,
+.home .sharp-scrollcue {
+  animation: none;
+}
+.home .reveal {
+  opacity: 1;
+  transform: none;
+  transition: none;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .reveal {
     opacity: 1;

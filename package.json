@@ -11,6 +11,9 @@
     "build:lienzo": "tsc -b && vite build --mode lienzo",
     "zip:lienzo": "npm run build:lienzo && rm -f conoce-claude-lienzo.zip && cd dist && zip -r -X ../conoce-claude-lienzo.zip . -x '.*' '*/.*'",
     "server": "tsx server/index.ts",
+    "server:start": "bash scripts/backend.sh start",
+    "server:stop": "bash scripts/backend.sh stop",
+    "server:status": "bash scripts/backend.sh status",
     "preview": "vite preview"
   },
   "dependencies": {
