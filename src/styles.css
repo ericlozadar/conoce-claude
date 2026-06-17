@@ -2112,6 +2112,173 @@ pre {
   color: var(--ink-900);
 }
 
+/* ---------- Página «conecta tus apps» (Plantillas) ---------- */
+.connect-app {
+  max-width: 1080px;
+  margin-inline: auto;
+  padding-inline: 56px;
+  padding-top: clamp(40px, 7vh, 76px);
+  padding-bottom: clamp(10px, 2vh, 24px);
+}
+.connect-app + .connect-app {
+  border-top: 1px solid var(--line);
+}
+.connect-app-head {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.connect-app-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  flex-shrink: 0;
+  border: 1px solid var(--line-strong);
+  border-top: 2px solid var(--accent);
+  background: var(--surface);
+  color: var(--accent);
+}
+.connect-app-icon svg {
+  width: 24px;
+  height: 24px;
+}
+.connect-app-meta {
+  flex: 1 1 260px;
+  min-width: 0;
+}
+.connect-app-name {
+  margin: 0;
+  font-family: var(--serif);
+  font-size: clamp(24px, 3.4vw, 32px);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--ink-900);
+}
+.connect-app-blurb {
+  margin: 4px 0 0;
+  font-size: 14.5px;
+  line-height: 1.6;
+  color: var(--muted);
+}
+.connect-app-endpoint {
+  align-self: center;
+  font-family: var(--mono);
+  font-size: 11.5px;
+  color: var(--accent);
+  background: var(--accent-soft);
+  padding: 5px 9px;
+  border-radius: 2px;
+  word-break: break-all;
+}
+
+/* Mini-tutorial de conexión */
+.connect-setup {
+  margin-top: 20px;
+}
+.connect-steps {
+  list-style: none;
+  counter-reset: connect-step;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.connect-step {
+  counter-increment: connect-step;
+  position: relative;
+  padding-left: 40px;
+}
+.connect-step::before {
+  content: counter(connect-step);
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 26px;
+  height: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--accent);
+  border: 1px solid var(--accent);
+  border-radius: 50%;
+}
+.connect-step-body .md {
+  font-size: 14.5px;
+  line-height: 1.65;
+  color: var(--ink-700);
+}
+.connect-step-body .md p {
+  margin: 0;
+}
+.connect-code {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 9px;
+  background: var(--field);
+  border-left: 2px solid var(--accent);
+  padding: 9px 12px;
+}
+.connect-code pre {
+  margin: 0;
+  font-family: var(--mono);
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: var(--ink-900);
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+.connect-code .copy-btn {
+  flex-shrink: 0;
+}
+.connect-security {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin-top: 16px;
+  background: var(--warn-bg);
+  border-left: 2px solid var(--warn-ink);
+  padding: 11px 13px;
+}
+.connect-security .i-icon {
+  flex-shrink: 0;
+  margin-top: 2px;
+  color: var(--warn-ink);
+}
+.connect-security .md {
+  font-size: 12.5px;
+  line-height: 1.55;
+  color: var(--ink-700);
+}
+.connect-security .md p {
+  margin: 0;
+}
+.connect-templates {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+@media (max-width: 560px) {
+  .connect-app {
+    padding-inline: 24px;
+  }
+  .connect-code {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .connect-code .copy-btn {
+    align-self: flex-end;
+  }
+}
+
 /* ===================================================================
    Página de TIPS de Claude Code (galería informativa, sharp)
    =================================================================== */

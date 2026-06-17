@@ -216,13 +216,68 @@ export type TipsLesson = Base & {
   playground?: TipsPlayground;
 };
 
+/** Un paso del mini-tutorial de conexión de una app (setup MCP). */
+export type ConnectStep = {
+  /** Texto del paso (Markdown: **negrita**, `código`). */
+  body: string;
+  /** Comando/snippet copiable que acompaña al paso (opcional). */
+  code?: string;
+};
+
+/** Una plantilla de prompt para una app ya conectada (solo copiar). */
+export type ConnectTemplate = {
+  id: string;
+  title: string;
+  /** Para qué sirve / cuándo usarla. */
+  use: string;
+  /** El texto de la plantilla, con huecos `[...]` para rellenar. */
+  template: string;
+};
+
+/** Una app conectable: su tutorial de conexión + sus plantillas. */
+export type ConnectApp = {
+  id: string;
+  /** Clave del ícono de línea (CARD_ICONS en App.tsx). */
+  icon?: string;
+  name: string;
+  /** Para qué sirve conectarla (una frase). */
+  blurb: string;
+  /** Endpoint/identificador del servidor MCP, mostrado como meta. */
+  endpoint?: string;
+  /** Pasos del mini-tutorial de conexión (el «tutorial antes de las plantillas»). */
+  steps: ConnectStep[];
+  /** Nota de seguridad/permisos (Markdown). */
+  security?: string;
+  /** Plantillas de tareas recurrentes para esta app. */
+  templates: ConnectTemplate[];
+};
+
+/**
+ * Página «conecta tus apps»: convierte a Claude Code en asistente de trabajo
+ * enchufando herramientas externas (Slack, Asana, GitHub) vía MCP. Una intro
+ * de MCP y, por cada app, un mini-tutorial de conexión seguido de sus plantillas.
+ * Las plantillas NO se ejecutan aquí: corren en el Claude Code del miembro del
+ * equipo, conectado a sus propias cuentas.
+ */
+export type ConnectLesson = Base & {
+  kind: "connect";
+  /** Introducción de la página. */
+  intro: string;
+  /** Bloque explicativo «¿Qué es MCP?» (qué es / cómo conecta / seguridad). */
+  explainer?: { heading: string; body: string }[];
+  /** Las apps de la página. */
+  apps: ConnectApp[];
+  takeaway?: string;
+};
+
 export type Lesson =
   | DemoLesson
   | CompareLesson
   | VibeLesson
   | FanoutLesson
   | LibraryLesson
-  | TipsLesson;
+  | TipsLesson
+  | ConnectLesson;
 
 export const lessons: Lesson[] = [
   // ---------- Buenas prácticas de prompting ----------
@@ -1282,5 +1337,153 @@ export const lessons: Lesson[] = [
         note: "Guardarraíles: usuario de SOLO LECTURA/monitoreo; cualquier acción correctiva (purga, ajuste de config, restore) la revisas y ejecutas tú.",
       },
     ],
+  },
+
+  // ---------- Plantillas: conectar apps (Claude como asistente) ----------
+  {
+    id: "plantillas-conectar-apps",
+    kind: "connect",
+    section: "plantillas",
+    emoji: "🔌",
+    title: "Conecta tus apps: Claude como asistente",
+    tagline: "Slack · Asana · GitHub vía MCP",
+    description:
+      "Conecta tus herramientas de trabajo —Slack, Asana, GitHub— a una sesión de Claude Code para que deje de pedirte copiar y pegar, y actúe directamente sobre ellas. Aquí tienes el tutorial de conexión de cada una y plantillas listas para las tareas que repites cada semana.",
+    intro:
+      "Estas plantillas viven en TU Claude Code, no en este tutorial: una vez que conectas la app, Claude puede leerla y actuar sobre ella. Por cada app verás primero cómo conectarla (una configuración que haces una sola vez) y luego prompts listos para copiar. Empieza siempre con permisos de solo lectura y amplía solo lo que necesites.",
+    explainer: [
+      {
+        heading: "¿Qué es MCP?",
+        body: "**MCP** (Model Context Protocol) es el «enchufe» estándar que conecta Claude Code con tus aplicaciones. En vez de que tú copies datos de Slack o Asana a la conversación, Claude habla directamente con esas apps —las lee y actúa sobre ellas— a través de un **servidor MCP** que añades una sola vez.",
+      },
+      {
+        heading: "Cómo se conecta (en general)",
+        body: "Añades un servidor con `claude mcp add` y, para los servicios en la nube (Slack, Asana, GitHub), te autenticas con **OAuth**: escribes `/mcp` dentro de Claude Code, eliges la app, se abre tu navegador, apruebas y listo. Para verlas: `claude mcp list`. El **scope** decide quién la ve: `local` (solo tú), `project` (queda en `.mcp.json`, se comparte con el equipo por git) o `user` (tú, en todos tus proyectos).",
+      },
+      {
+        heading: "Seguridad: léelo antes de conectar",
+        body: "Un servidor MCP **actúa con tus permisos**: ve y toca lo que tú ves y tocas en esa app. Reglas: **(1)** conecta solo servidores **oficiales** (los de esta página lo son); **(2)** concede los **permisos mínimos** (empieza en solo lectura); **(3)** recuerda que datos externos (un mensaje de Slack, un issue) pueden traer instrucciones ocultas —revisa lo que Claude va a hacer antes de aprobar acciones que escriben o borran.",
+      },
+    ],
+    apps: [
+      {
+        id: "slack",
+        icon: "slack",
+        name: "Slack",
+        blurb:
+          "Para que Claude lea canales, busque mensajes y publique avisos sin que salgas de la sesión.",
+        endpoint: "https://mcp.slack.com/mcp",
+        steps: [
+          {
+            body: "**Conéctalo** desde Claude Code con el plugin oficial de Slack (configura el servidor y arranca el OAuth por ti):",
+            code: "/plugin install slack",
+          },
+          {
+            body: "Si prefieres añadirlo a mano, registra el servidor MCP (HTTP):",
+            code: "claude mcp add --transport http slack https://mcp.slack.com/mcp",
+          },
+          {
+            body: "**Autentícate**: escribe `/mcp`, elige **slack → Authenticate**. Se abre el navegador, inicias sesión en tu workspace y apruebas los permisos. (Si tu workspace restringe integraciones, tu admin de Slack debe permitirla.)",
+          },
+        ],
+        security:
+          "Concede permisos de **solo lectura** (leer canales y buscar) si no necesitas que publique; añade el de escritura solo cuando vayas a mandar mensajes.",
+        templates: [
+          {
+            id: "slack-resumen",
+            title: "Resumen semanal de un canal",
+            use: "Ponerte al día de un canal ruidoso sin leer 200 mensajes.",
+            template:
+              "Busca en el canal #[CANAL] los mensajes de la última semana y resúmelos por tema. Para cada tema dime: qué se discutió, quién participó y qué quedó pendiente o decidido. Devuélvelo como lista de bullets, con el enlace al hilo cuando sea útil.",
+          },
+          {
+            id: "slack-aviso",
+            title: "Redactar y publicar un aviso",
+            use: "Comunicar un mantenimiento o incidente con el tono correcto, sin salir de Claude.",
+            template:
+              "Redacta un aviso breve y claro para el canal #[CANAL] sobre [TEMA: p. ej. ventana de mantenimiento del sistema X]. Contexto: [QUÉ PASA, CUÁNDO, A QUÉ AFECTA, QUÉ DEBE HACER LA GENTE]. Tono [formal/cercano], sin tecnicismos. Muéstramelo para aprobarlo y, cuando te confirme, publícalo en el canal.",
+          },
+        ],
+      },
+      {
+        id: "asana",
+        icon: "asana",
+        name: "Asana",
+        blurb:
+          "Para que Claude lea tus tareas, las cree desde notas y reorganice proyectos por ti.",
+        endpoint: "https://mcp.asana.com/v2/mcp",
+        steps: [
+          {
+            body: "**Añade** el servidor MCP oficial de Asana (HTTP):",
+            code: "claude mcp add --transport http asana https://mcp.asana.com/v2/mcp",
+          },
+          {
+            body: "**Autentícate**: escribe `/mcp`, elige **asana → Authenticate**. Se abre el navegador, inicias sesión en Asana y apruebas el acceso. Claude verá y editará solo lo que tu cuenta de Asana ya puede ver.",
+          },
+          {
+            body: "**Compruébalo** en cualquier momento con:",
+            code: "claude mcp list",
+          },
+        ],
+        security:
+          "El acceso respeta tus permisos de Asana (no escala privilegios). Las acciones que crean o mueven tareas te muestran una **vista previa** antes de confirmar: revísala.",
+        templates: [
+          {
+            id: "asana-desde-notas",
+            title: "Crear tareas desde notas de junta",
+            use: "Convertir las minutas de una reunión en tareas, sin capturarlas a mano.",
+            template:
+              "De estas notas de junta, extrae los acuerdos y crea una tarea por cada uno en el proyecto «[PROYECTO]» de Asana. Asigna a la persona nombrada (si la hay), pon como fecha límite [p. ej. «el próximo viernes»] y añade en la descripción de qué junta salió. Muéstrame la vista previa antes de crearlas.\n\nNotas:\n[PEGA AQUÍ LAS NOTAS]",
+          },
+          {
+            id: "asana-mis-tareas",
+            title: "Resumen de mis pendientes de la semana",
+            use: "Ver tu carga real de la semana, agrupada y priorizada.",
+            template:
+              "Muéstrame mis tareas de Asana con fecha de esta semana. Agrúpalas por proyecto, resalta las marcadas como urgentes o de alta prioridad y dime cuáles convendría mover a la próxima semana si están saturadas. Termina con una lista priorizada de por dónde empezar.",
+          },
+        ],
+      },
+      {
+        id: "github",
+        icon: "github",
+        name: "GitHub",
+        blurb:
+          "Para que Claude trié issues, lea PRs y redacte descripciones desde una sesión interactiva.",
+        endpoint: "https://api.githubcopilot.com/mcp/",
+        steps: [
+          {
+            body: "**Añade** el servidor MCP remoto oficial de GitHub (HTTP):",
+            code: "claude mcp add --transport http github https://api.githubcopilot.com/mcp/",
+          },
+          {
+            body: "**Autentícate** con OAuth: escribe `/mcp`, elige **github → Authenticate** y aprueba en el navegador. (Alternativa: si tu organización bloquea OAuth, usa un token personal con permisos mínimos vía `--header \"Authorization: Bearer ghp_…\"`.)",
+          },
+          {
+            body: "**No lo confundas:** `/install-github-app` es OTRA cosa —sirve para que Claude revise PRs automáticamente en GitHub Actions (CI), no para tu sesión interactiva—. Para trabajar tú con Claude, usa el servidor MCP de arriba.",
+          },
+        ],
+        security:
+          "OAuth te da acceso solo a los repos que tu cuenta ya ve, y respeta protecciones de rama y CODEOWNERS. Concede los **scopes mínimos** y recuerda que las acciones de Claude quedan registradas en tu *audit log* de GitHub.",
+        templates: [
+          {
+            id: "github-triage",
+            title: "Triage de issues por etiqueta",
+            use: "Ordenar la cola de issues abiertos sin abrir 30 pestañas.",
+            template:
+              "Lista los issues abiertos del repo [OWNER]/[REPO] con la etiqueta «[ETIQUETA]». Para cada uno dame: título, número, autor y un resumen de una línea. Agrúpalos por prioridad (si hay etiquetas de prioridad) o por antigüedad, y devuélvelo como checklist en Markdown.",
+          },
+          {
+            id: "github-pr-desc",
+            title: "Redactar la descripción de un PR desde el diff",
+            use: "Escribir una descripción clara de un PR a partir de los cambios.",
+            template:
+              "Lee el PR #[NÚMERO] del repo [OWNER]/[REPO] y su diff. Redáctame una descripción profesional en Markdown que: resuma qué cambia y por qué, liste los archivos afectados, marque cambios que rompan compatibilidad y sugiera revisores según las rutas tocadas. Déjala lista para pegar.",
+          },
+        ],
+      },
+    ],
+    takeaway:
+      "Conectar una app convierte a Claude de «un chat al que le pegas cosas» en **un asistente que trabaja dentro de tus herramientas**: resume, crea, ordena y reporta sin que tú hagas el trabajo repetitivo. Empieza por una sola app —la que más tiempo te robe— y crece desde ahí.",
   },
 ];

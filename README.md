@@ -19,7 +19,7 @@ acercar la IA agéntica al trabajo diario (DBA, ETL, BI).
 - 🤖 **Demos agénticos reales.** Claude trabaja en un sandbox aislado con
   herramientas: limpia un CSV sucio, escribe y corrige código con pruebas, y
   hasta **lanza varios subagentes en paralelo** que documentan tablas a la vez.
-- 🎓 **16 lecciones** organizadas en una escalera de complejidad: de "cómo pedir
+- 🎓 **17 lecciones** organizadas en una escalera de complejidad: de "cómo pedir
   bien" hasta dirigir agentes en Claude Code.
 - 🧰 **Plantillas listas para llevar**, aterrizadas al dominio real del equipo
   (Oracle, PostgreSQL, gobierno de datos), copiables con un clic.
@@ -35,7 +35,7 @@ acercar la IA agéntica al trabajo diario (DBA, ETL, BI).
 | Sección | Contenido |
 | --- | --- |
 | **Prompting** | 11 lecciones: contexto y ejemplos, anclar para no alucinar, descomponer, guardarraíles, vibe coding, modos de ejecución, agentes en paralelo, y más. |
-| **Plantillas** | Biblioteca de prompts reutilizables (regulares + recetas agénticas) para tareas recurrentes del equipo. |
+| **Plantillas** | Biblioteca de prompts reutilizables (regulares + recetas agénticas) para tareas recurrentes del equipo, y una guía para **conectar tus apps** (Slack, Asana, GitHub) vía MCP y volver a Claude un asistente de trabajo. |
 | **Demos** | Una primera mirada a la IA agéntica para quien empieza: límites honestos, requerimiento → entregable, y un agente con herramientas. |
 
 ---

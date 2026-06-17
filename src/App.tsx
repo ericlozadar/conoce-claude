@@ -10,6 +10,7 @@ import {
   lessons,
   type CompareLesson,
   type ComparePrompt,
+  type ConnectLesson,
   type DemoLesson,
   type FanoutLesson,
   type Lesson,
@@ -433,6 +434,13 @@ const ICON_PATHS: Record<string, ReactNode> = {
       <path d="M10 15.5h4" />
     </>
   ),
+  "plantillas-conectar-apps": (
+    <>
+      <path d="M9 3v4M15 3v4" />
+      <rect x="7" y="7" width="10" height="5" rx="1" />
+      <path d="M12 12v3a4 4 0 0 1-4 4H6" />
+    </>
+  ),
 };
 
 function NavIcon({ id }: { id: string }) {
@@ -626,6 +634,22 @@ const CARD_ICONS: Record<string, ReactNode> = {
     <>
       <path d="M10 13a4 4 0 0 0 5.6.4l2.4-2.4a4 4 0 0 0-5.6-5.6L11 7" />
       <path d="M14 11a4 4 0 0 0-5.6-.4L6 13a4 4 0 0 0 5.6 5.6L13 17" />
+    </>
+  ),
+  slack: <path d="M10 4L8 20M16.5 4l-2 16M4.5 9.5H20M4 14.5h15.5" />,
+  asana: (
+    <>
+      <circle cx="12" cy="6.2" r="2.4" />
+      <circle cx="6.6" cy="15.4" r="2.4" />
+      <circle cx="17.4" cy="15.4" r="2.4" />
+    </>
+  ),
+  github: (
+    <>
+      <circle cx="7" cy="6" r="2.2" />
+      <circle cx="7" cy="18" r="2.2" />
+      <circle cx="17" cy="8.5" r="2.2" />
+      <path d="M7 8.2v7.6M17 10.7c0 3.6-3.6 3.2-6.6 4.8" />
     </>
   ),
   merge: (
@@ -1035,6 +1059,8 @@ export function App() {
         <FanoutPage key={lesson.id} lesson={lesson} />
       ) : lesson.kind === "library" ? (
         <LibraryPage key={lesson.id} lesson={lesson} />
+      ) : lesson.kind === "connect" ? (
+        <ConnectPage key={lesson.id} lesson={lesson} />
       ) : lesson.kind === "tips" ? (
         <TipsPage key={lesson.id} lesson={lesson} />
       ) : (
@@ -2188,6 +2214,98 @@ function TemplateCardView({ card }: { card: TemplateCard }) {
         )}
       </div>
     </section>
+  );
+}
+
+// ---------- Página «conecta tus apps» (Plantillas) ----------
+// Convierte a Claude Code en asistente de trabajo enchufando apps externas vía
+// MCP. Una intro de MCP y, por cada app, un mini-tutorial de conexión seguido de
+// sus plantillas (de copiar; corren en el Claude Code del propio miembro).
+
+function ConnectPage({ lesson }: { lesson: ConnectLesson }) {
+  return (
+    <SharpShell lesson={lesson}>
+      <Reveal as="aside" className="sharp-lead" variant="left">
+        <span className="sharp-note-label accent">Cómo usarlas</span>
+        <p>{lesson.intro}</p>
+      </Reveal>
+
+      {lesson.explainer && (
+        <section className="sharp-explainer">
+          {lesson.explainer.map((b, i) => (
+            <Reveal key={b.heading} className="sharp-explain-block" delay={i * 90}>
+              <h4>{b.heading}</h4>
+              <Markdown>{b.body}</Markdown>
+            </Reveal>
+          ))}
+        </section>
+      )}
+
+      {lesson.apps.map((app) => (
+        <Reveal as="section" key={app.id} className="connect-app">
+          <header className="connect-app-head">
+            <span className="connect-app-icon">
+              <CardIcon id={app.icon} />
+            </span>
+            <div className="connect-app-meta">
+              <h2 className="connect-app-name">{app.name}</h2>
+              <p className="connect-app-blurb">{app.blurb}</p>
+            </div>
+            {app.endpoint && (
+              <code className="connect-app-endpoint">{app.endpoint}</code>
+            )}
+          </header>
+
+          <div className="connect-setup">
+            <span className="sharp-note-label accent">Conéctala (una vez)</span>
+            <ol className="connect-steps">
+              {app.steps.map((s, i) => (
+                <li key={i} className="connect-step">
+                  <div className="connect-step-body">
+                    <Markdown>{s.body}</Markdown>
+                  </div>
+                  {s.code && (
+                    <div className="connect-code">
+                      <pre>{s.code}</pre>
+                      <CopyButton text={s.code} />
+                    </div>
+                  )}
+                </li>
+              ))}
+            </ol>
+            {app.security && (
+              <div className="connect-security">
+                <IconWarn />
+                <Markdown>{app.security}</Markdown>
+              </div>
+            )}
+          </div>
+
+          <div className="connect-templates">
+            <span className="sharp-note-label accent">Plantillas</span>
+            {app.templates.map((t) => (
+              <section key={t.id} className="sharp-tcard">
+                <header className="sharp-tcard-head">
+                  <span className="sharp-tcard-title">{t.title}</span>
+                  <CopyButton text={t.template} />
+                </header>
+                <div className="sharp-tcard-body">
+                  <p className="sharp-tcard-use">{t.use}</p>
+                  <pre className="sharp-tcard-text">{t.template}</pre>
+                </div>
+              </section>
+            ))}
+          </div>
+        </Reveal>
+      ))}
+
+      {lesson.takeaway && (
+        <Reveal as="aside" className="sharp-takeaway">
+          <span className="sharp-note-label accent">Por qué importa</span>
+          <Markdown>{lesson.takeaway}</Markdown>
+        </Reveal>
+      )}
+    </SharpShell>
   );
 }
 
