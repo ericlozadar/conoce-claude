@@ -2282,10 +2282,33 @@ pre {
 /* ===================================================================
    Página de TIPS de Claude Code (galería informativa, sharp)
    =================================================================== */
+/* Contenedor externo que gestiona el padding vertical del bloque de tips */
+.sharp-tips-section {
+  padding-block: clamp(44px, 8vh, 84px);
+}
+/* Un grupo temático: encabezado hairline + cuadrícula de tarjetas */
+.sharp-tips-group {
+  margin-bottom: clamp(32px, 6vh, 56px);
+}
+.sharp-tips-group:last-child {
+  margin-bottom: 0;
+}
+.sharp-tips-group-label {
+  max-width: 1140px;
+  margin-inline: auto;
+  padding: 12px 56px 16px;
+  border-top: 1.5px solid var(--accent);
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
 .sharp-tips {
   max-width: 1140px;
   margin-inline: auto;
-  padding: clamp(44px, 8vh, 84px) 56px clamp(56px, 10vh, 112px);
+  padding: 0 56px;
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(330px, 1fr));
   gap: 22px;
@@ -2356,6 +2379,9 @@ pre {
 @media (max-width: 560px) {
   .sharp-tips {
     grid-template-columns: 1fr;
+    padding-inline: 24px;
+  }
+  .sharp-tips-group-label {
     padding-inline: 24px;
   }
 }
@@ -2735,19 +2761,24 @@ pre {
 /* ---------- Portada limpia (Home) ----------
    El Home es lo que la galería de Lienzo captura como «portada» (screenshot).
    La entrada cinemática del hero arranca en opacity:0, así que un screenshot
-   tomado en el primer instante salía EN BLANCO. Solo en el Home anulamos esas
-   entradas → renderiza completo desde el frame 0. Las páginas de lección
-   conservan intactas sus animaciones de entrada (se aprecian al navegar). */
+   tomado en el primer instante salía EN BLANCO. Solo en el Home anulamos TODAS
+   las animaciones y transiciones de entrada → renderiza completo desde el frame 0.
+   Las páginas de lección conservan intactas sus animaciones (se aprecian al navegar). */
 .home .sharp-kicker,
 .home .sharp-title,
 .home .sharp-lede,
 .home .sharp-scrollcue {
-  animation: none;
+  animation: none !important;
+  opacity: 1 !important;
+  transform: none !important;
 }
-.home .reveal {
-  opacity: 1;
-  transform: none;
-  transition: none;
+.home .reveal,
+.home .home-section-head,
+.home .home-page {
+  animation: none !important;
+  opacity: 1 !important;
+  transform: none !important;
+  transition: none !important;
 }
 
 @media (prefers-reduced-motion: reduce) {

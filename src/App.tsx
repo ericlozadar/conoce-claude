@@ -17,6 +17,7 @@ import {
   type LibraryLesson,
   type Section,
   type TemplateCard,
+  type TipCard,
   type TipsLesson,
   type TipsPlayground,
   type VibeLesson,
@@ -798,6 +799,27 @@ const CARD_ICONS: Record<string, ReactNode> = {
       <path d="M14 7l3 3" />
     </>
   ),
+  sliders: (
+    <>
+      <path d="M4 6h16M4 12h16M4 18h16" />
+      <circle cx="9" cy="6" r="2" />
+      <circle cx="15" cy="12" r="2" />
+      <circle cx="11" cy="18" r="2" />
+    </>
+  ),
+  clock: (
+    <>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M12 7v5l3 3" />
+    </>
+  ),
+  calendar: (
+    <>
+      <rect x="4" y="5" width="16" height="16" rx="1" />
+      <path d="M4 10h16M8 5V2M16 5V2" />
+    </>
+  ),
+  bolt: <path d="M13 3l-6 10h6l-2 8 7-10h-7z" />,
 };
 
 function CardIcon({ id }: { id?: string }) {
@@ -2561,6 +2583,16 @@ function SkillPlayground({ pg }: { pg: Extract<TipsPlayground, { kind: "skill" }
 // ---------- Página de tips de Claude Code (galería informativa) ----------
 
 function TipsPage({ lesson }: { lesson: TipsLesson }) {
+  // Agrupa los tips por su campo `group`, preservando el orden del array.
+  type GroupedTips = { label: string; tips: (TipCard & { idx: number })[] };
+  const groups = lesson.tips.reduce<GroupedTips[]>((acc, t, idx) => {
+    const label = t.group ?? "";
+    const last = acc[acc.length - 1];
+    if (!last || last.label !== label) acc.push({ label, tips: [{ ...t, idx }] });
+    else last.tips.push({ ...t, idx });
+    return acc;
+  }, []);
+
   return (
     <SharpShell lesson={lesson}>
       <Reveal as="aside" className="sharp-lead" variant="left">
@@ -2568,25 +2600,36 @@ function TipsPage({ lesson }: { lesson: TipsLesson }) {
         <p>{lesson.intro}</p>
       </Reveal>
 
-      <section className="sharp-tips">
-        {lesson.tips.map((t, i) => (
-          <Reveal key={t.title} className="sharp-tip" delay={(i % 2) * 80}>
-            <div className="sharp-tip-head">
-              <span className="sharp-tip-icon">
-                <CardIcon id={t.icon} />
-              </span>
-              <h3 className="sharp-tip-title">{t.title}</h3>
+      <div className="sharp-tips-section">
+        {groups.map(({ label, tips: gt }) => (
+          <div key={label || "_"} className="sharp-tips-group">
+            {label && (
+              <Reveal className="sharp-tips-group-label" variant="left">
+                {label}
+              </Reveal>
+            )}
+            <div className="sharp-tips">
+              {gt.map((t) => (
+                <Reveal key={t.title} className="sharp-tip" delay={(t.idx % 2) * 80}>
+                  <div className="sharp-tip-head">
+                    <span className="sharp-tip-icon">
+                      <CardIcon id={t.icon} />
+                    </span>
+                    <h3 className="sharp-tip-title">{t.title}</h3>
+                  </div>
+                  <div className="sharp-tip-what">
+                    <Markdown>{t.what}</Markdown>
+                  </div>
+                  <div className="sharp-tip-how">
+                    <span className="sharp-tip-how-label">Cómo</span>
+                    <Markdown>{t.how}</Markdown>
+                  </div>
+                </Reveal>
+              ))}
             </div>
-            <div className="sharp-tip-what">
-              <Markdown>{t.what}</Markdown>
-            </div>
-            <div className="sharp-tip-how">
-              <span className="sharp-tip-how-label">Cómo</span>
-              <Markdown>{t.how}</Markdown>
-            </div>
-          </Reveal>
+          </div>
         ))}
-      </section>
+      </div>
 
       {lesson.playground &&
         (lesson.playground.kind === "modes" ? (

@@ -10,9 +10,137 @@
       href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%23e10023'/><path d='M16 5 L18.2 13.8 L27 16 L18.2 18.2 L16 27 L13.8 18.2 L5 16 L13.8 13.8 Z' fill='white'/></svg>"
     />
     <title>Conoce a Claude · Tutorial interactivo</title>
+    <!--
+      Shell estático: portada del sitio visible antes de que React monte.
+      Lienzo toma el screenshot en el primer paint, antes de que el JS corra;
+      React reemplaza #root al montar — los usuarios normales nunca ven esto.
+      Clases prefijadas con «s-» para no colisionar con el CSS de la app.
+    -->
+    <style>
+      *{box-sizing:border-box}
+      body{margin:0;background:#f7f7f8}
+      .s-app{display:grid;grid-template-columns:340px 1fr;height:100vh;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:#f7f7f8}
+      /* ── Sidebar ── */
+      .s-sidebar{background:#fff;border-right:1px solid #e7e7eb;display:flex;flex-direction:column;padding:24px 16px;overflow:hidden}
+      .s-brand{display:flex;align-items:center;gap:12px;padding:0 8px 2px;margin-bottom:20px;text-decoration:none}
+      .s-brand-mark{width:38px;height:38px;border-radius:2px;background:#e10023;color:#fff;display:grid;place-items:center;font-size:19px;font-weight:700;flex-shrink:0}
+      .s-brand-title{font-size:19px;font-weight:600;letter-spacing:-.005em;color:#1a1a1f;line-height:1.15}
+      .s-brand-sub{font-size:12px;color:#6b6b76;margin-top:3px}
+      .s-nav{display:flex;flex-direction:column;gap:2px;flex:1;overflow:hidden}
+      .s-div{margin:18px 6px 6px 13px;padding-top:13px;border-top:1px solid #e7e7eb;font-size:10px;font-weight:600;letter-spacing:.18em;text-transform:uppercase}
+      .s-div.p{color:#e10023}
+      .s-div.t{color:#2f7d5b}
+      .s-div.a{color:#4b5566}
+      .s-item{display:flex;align-items:flex-start;gap:12px;border-left:3px solid transparent;padding:10px 10px 10px 13px}
+      .s-item.on{background:#f4f4f6;border-left-color:#e10023}
+      .s-step{font-family:ui-monospace,monospace;font-size:11px;color:#6b6b76;flex-shrink:0;margin-top:2px;min-width:18px}
+      .s-label{font-size:13.5px;font-weight:600;color:#1a1a1f;line-height:1.3}
+      .s-tag{font-size:11.5px;color:#6b6b76;margin-top:1px}
+      /* ── Hero ── */
+      .s-content{overflow-y:auto}
+      .s-hero{position:relative;overflow:hidden;display:flex;align-items:flex-end;min-height:62vh;padding:clamp(64px,12vh,140px) 56px clamp(52px,9vh,104px);background:radial-gradient(125% 145% at 82% -12%,#8c0d22 0%,#4a0a13 62%);color:#eef1f7}
+      .s-bignum{position:absolute;top:-8%;right:1%;font-size:clamp(220px,28vw,480px);line-height:.8;color:rgba(255,255,255,.04);font-weight:700;pointer-events:none;user-select:none}
+      .s-inner{position:relative;z-index:2;width:100%}
+      .s-kicker{display:inline-block;font-family:ui-monospace,monospace;font-size:12px;letter-spacing:.28em;text-transform:uppercase;color:#ff9aa6;margin-bottom:22px}
+      .s-h1{margin:0 0 18px;font-size:clamp(40px,5vw,82px);line-height:1.02;letter-spacing:-.02em;font-weight:600;color:#eef1f7}
+      .s-lede{margin:0;max-width:56ch;font-size:clamp(15px,1.5vw,18px);line-height:1.6;color:#b9bdc9}
+    </style>
   </head>
   <body>
-    <div id="root"></div>
+    <div id="root"><div class="s-app">
+      <aside class="s-sidebar">
+        <div class="s-brand">
+          <div class="s-brand-mark">✦</div>
+          <div>
+            <div class="s-brand-title">Conoce a Claude</div>
+            <div class="s-brand-sub">Tutorial interactivo</div>
+          </div>
+        </div>
+        <div class="s-nav">
+          <div class="s-div p">Buenas prácticas de prompting</div>
+          <div class="s-item on">
+            <span class="s-step">01</span>
+            <div><div class="s-label">Contexto y ejemplos</div><div class="s-tag">Dale tus datos y tu estándar</div></div>
+          </div>
+          <div class="s-item">
+            <span class="s-step">02</span>
+            <div><div class="s-label">Anclar para no alucinar</div><div class="s-tag">Que no invente lo que no sabe</div></div>
+          </div>
+          <div class="s-item">
+            <span class="s-step">03</span>
+            <div><div class="s-label">Descompón la tarea</div><div class="s-tag">Pídela por pasos</div></div>
+          </div>
+          <div class="s-item">
+            <span class="s-step">04</span>
+            <div><div class="s-label">Itera y refina</div><div class="s-tag">El prompt es un diálogo</div></div>
+          </div>
+          <div class="s-item">
+            <span class="s-step">05</span>
+            <div><div class="s-label">Guardarraíles: autonomía segura</div><div class="s-tag">Define qué puede tocar</div></div>
+          </div>
+          <div class="s-item">
+            <span class="s-step">06</span>
+            <div><div class="s-label">Vibe coding</div><div class="s-tag">Construir dirigiendo, no tecleando</div></div>
+          </div>
+          <div class="s-item">
+            <span class="s-step">07</span>
+            <div><div class="s-label">Modos de ejecución</div><div class="s-tag">Cuánta autonomía le das</div></div>
+          </div>
+          <div class="s-item">
+            <span class="s-step">08</span>
+            <div><div class="s-label">Contratos en .md (PRP)</div><div class="s-tag">Un spec que el agente cumple</div></div>
+          </div>
+          <div class="s-item">
+            <span class="s-step">09</span>
+            <div><div class="s-label">Skills y MCP</div><div class="s-tag">Habilidades y tus sistemas</div></div>
+          </div>
+          <div class="s-item">
+            <span class="s-step">10</span>
+            <div><div class="s-label">Agentes en paralelo</div><div class="s-tag">Varios subagentes a la vez</div></div>
+          </div>
+          <div class="s-item">
+            <span class="s-step">✳</span>
+            <div><div class="s-label">Tips de Claude Code</div><div class="s-tag">Trucos reales de Claude Code</div></div>
+          </div>
+          <div class="s-div t">Plantillas</div>
+          <div class="s-item">
+            <span class="s-step">01</span>
+            <div><div class="s-label">Biblioteca de plantillas</div><div class="s-tag">Listas para tu trabajo de datos</div></div>
+          </div>
+          <div class="s-item">
+            <span class="s-step">02</span>
+            <div><div class="s-label">Plantillas agénticas</div><div class="s-tag">Recetas para Claude Code</div></div>
+          </div>
+          <div class="s-item">
+            <span class="s-step">03</span>
+            <div><div class="s-label">Conecta tus apps</div><div class="s-tag">Claude como asistente</div></div>
+          </div>
+          <div class="s-div a">Demos para principiantes</div>
+          <div class="s-item">
+            <span class="s-step">01</span>
+            <div><div class="s-label">Límites honestos</div><div class="s-tag">Lo que no puedo hacer (y por qué)</div></div>
+          </div>
+          <div class="s-item">
+            <span class="s-step">02</span>
+            <div><div class="s-label">Requerimiento → entregable</div><div class="s-tag">De la petición al resultado</div></div>
+          </div>
+          <div class="s-item">
+            <span class="s-step">03</span>
+            <div><div class="s-label">Agente con herramientas</div><div class="s-tag">Claude ejecuta tareas reales</div></div>
+          </div>
+        </div>
+      </aside>
+      <div class="s-content">
+        <header class="s-hero">
+          <div class="s-bignum">✦</div>
+          <div class="s-inner">
+            <span class="s-kicker">Tutorial interactivo · UPAEP</span>
+            <h1 class="s-h1">Hola, te damos la bienvenida</h1>
+            <p class="s-lede">Soy Claude, la IA de Anthropic, y este es un recorrido para conocernos. Aquí vas a ver —en vivo, no en teoría— qué puedo hacer y, sobre todo, cómo puedo echarte una mano en el día a día de Datos y Analítica.</p>
+          </div>
+        </header>
+      </div>
+    </div></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
