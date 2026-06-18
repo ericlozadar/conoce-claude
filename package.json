@@ -8,6 +8,7 @@
     "dev": "concurrently -n web,api -c cyan,green \"vite\" \"tsx watch server/index.ts\"",
     "build": "tsc -b && vite build",
     "deploy": "npm run build && rm -rf /var/www/html/conoce-claude/assets && cp -r dist/. /var/www/html/conoce-claude/",
+    "deploy:v12": "npm run build:lienzo && rm -rf /var/www/html/conoce-claude-v12/assets && cp -r dist/. /var/www/html/conoce-claude-v12/",
     "build:lienzo": "tsc -b && vite build --mode lienzo",
     "zip:lienzo": "npm run build:lienzo && rm -f conoce-claude-lienzo.zip && cd dist && zip -r -X ../conoce-claude-lienzo.zip . -x '.*' '*/.*'",
     "server": "tsx server/index.ts",
